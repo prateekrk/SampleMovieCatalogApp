@@ -11,13 +11,20 @@ import SwiftUI
 @MainActor
 class MovieCatalogController: ObservableObject {
     var movies: Movies = []
+    private var years = [String]()
+    private var actors = [String]()
+    private var genres = [String]()
+    private var directors = [String]()
     private func getGenres() -> [String] {
-        var set = Set<String>()
-        movies.forEach { model in
-            let values =  splitTheMultiValuesByComma(value: model.genre)
-            set = set.union(values)
+        if genres.isEmpty {
+            var set = Set<String>()
+            movies.forEach { model in
+                let values =  splitTheMultiValuesByComma(value: model.genre)
+                set = set.union(values)
+            }
+            genres = Array(set)
         }
-        return Array(set)
+        return genres
     }
 
     private func splitTheMultiValuesByComma(value: String) -> [String] {
@@ -25,29 +32,38 @@ class MovieCatalogController: ObservableObject {
     }
 
     private func getDirectors() -> [String] {
-        var set = Set<String>()
-        movies.forEach { model in
-            let values =  splitTheMultiValuesByComma(value: model.director)
-            set = set.union(values)
+        if directors.isEmpty {
+            var set = Set<String>()
+            movies.forEach { model in
+                let values =  splitTheMultiValuesByComma(value: model.director)
+                set = set.union(values)
+            }
+            directors = Array(set)
         }
-        return Array(set)
+        return directors
     }
 
     private func getActors() -> [String] {
-        var set = Set<String>()
-        movies.forEach { model in
-            let values =  splitTheMultiValuesByComma(value: model.actors)
-            set = set.union(values)
+        if actors.isEmpty {
+            var set = Set<String>()
+            movies.forEach { model in
+                let values =  splitTheMultiValuesByComma(value: model.actors)
+                set = set.union(values)
+            }
+            actors = Array(set)
         }
-        return Array(set)
+        return actors
     }
 
     private func getYears() -> [String] {
-        var set = Set<String>()
-        set = set.union(movies.map { model in
-            return model.year
-        })
-        return Array(set)
+        if years.isEmpty {
+            var set = Set<String>()
+            set = set.union(movies.map { model in
+                return model.year
+            })
+            years = Array(set)
+        }
+        return years
     }
 
     func getListForSelectedData(selected: SelectionValues ) -> [String] {
