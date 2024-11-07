@@ -8,10 +8,7 @@
 import SwiftUI
 
 struct ListOfMoviesView: View {
-    @StateObject var viewModel: MovieCatalogController
-    @State var movies: Movies = []
-    var selectedOption: SelectionValues?
-    var selectedValue: String?
+    var movies: Movies
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -23,18 +20,11 @@ struct ListOfMoviesView: View {
             }
             .padding()
         }
-        .onAppear {
-            if selectedOption !=  nil, selectedValue != nil {
-                movies = viewModel.getMoviesBySelectedValue(selectedOption: selectedOption!, value: selectedValue!)
-            } else {
-                movies = viewModel.movies
-            }
-        }
     }
 }
 
 #Preview {
-    ListOfMoviesView(viewModel: MovieCatalogController(), movies: [.example, .example])
+    ListOfMoviesView(movies: [.example, .example])
 }
 
 

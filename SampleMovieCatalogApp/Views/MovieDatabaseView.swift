@@ -9,12 +9,13 @@ import SwiftUI
 
 struct MovieCatalogView: View {
     @State var searchQuery: String = ""
+    @State var isLoading = true
     @State var isSheetPresented = false
     @StateObject var movieDataStore = MovieDataStore()
     @State var moviesMatchingSearch = Movies()
     @StateObject var controller: MovieCatalogController = MovieCatalogController()
 
-    var chooseBy = ["Year","Genre","Directors","Actors","All Movies"]
+    var chooseBy = ["Year","Genre","Directors","Actors"]
     var body: some View {
         NavigationStack {
             VStack {
@@ -26,7 +27,7 @@ struct MovieCatalogView: View {
                         Image(systemName: "magnifyingglass")
                         TextField("Search Movies by title/genere/actor/director", text: $searchQuery).onChange(of: searchQuery) {
                             DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500)) {
-                                moviesMatchingSearch = controller.searchForMovie(searchQuery: searchQuery)
+                                moviesMatchingSearch = controller.searchForMovie(searchQuery: searchQuery.trimmingCharacters(in: .whitespacesAndNewlines))
                             }
                         }
                     }
@@ -37,7 +38,20 @@ struct MovieCatalogView: View {
                     if searchQuery.isEmpty {
                         ForEach(chooseBy, id: \.self) { each in
                             ExpandableButtonView(movieViewModel: controller, text: each)
+                           
                         }
+                        
+                        HStack {
+                            Text("All Movies")
+                                .font(.callout)
+                                .frame(alignment: .leading)
+                            Spacer()
+                            NavigationLink(destination: AllMoviesScreen(movies: controller.movies, sortBy: .byYear, controller: controller)) {
+                                Image(systemName: "greaterthan")
+                            }
+                        } 
+                        .padding()
+
                     } else {
                         ForEach(moviesMatchingSearch, id: \.imdbID) { each in
                             NavigationLink(destination: MovieDetailView(movie: each)) {
@@ -47,8 +61,16 @@ struct MovieCatalogView: View {
                     }
                 }
                 Spacer()
-            }.navigationTitle("Movie Catalog")
+            }
             .padding()
+            .overlay(content: {
+                if isLoading {
+                    ProgressView("Loading")
+                } else {
+                    EmptyView()
+                }
+            })
+            .navigationTitle("Movie Catalog")
             .task {
                 do {
                     try await movieDataStore.saveMoviews()
@@ -59,6 +81,7 @@ struct MovieCatalogView: View {
                     try await movieDataStore.loadMovies()
                     controller.movies = movieDataStore.movies
                     
+                    isLoading = false
                 } catch let error {
                     fatalError(error.localizedDescription)
                 }

@@ -125,4 +125,21 @@ class MovieCatalogController: ObservableObject {
             return (model.title.contains(searchQuery)) || model.genre.contains(searchQuery) || model.actors.contains(searchQuery) || model.director.contains(searchQuery)
         }
     }
+
+    func sortBasedOnOptions(option: SortOptions) -> Movies {
+        switch option {
+        case .byYear:
+            return movies.sorted { model1, model2 in
+                return model1.year < model2.year
+            }
+        case .aToZMovieNames:
+            return movies.sorted { model1, model2 in
+                return model1.title < model2.title
+            }
+        case .zToAMovieNames:
+            return movies.sorted { model1, model2 in
+                return model1.title > model2.title
+            }
+        }
+    }
 }

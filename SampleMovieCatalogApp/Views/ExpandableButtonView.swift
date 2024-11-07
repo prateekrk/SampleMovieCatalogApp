@@ -23,11 +23,7 @@ struct ExpandableButtonView: View {
                     Button {
                         withAnimation {
                             isExapanded = !isExapanded
-                            if text == "All Movies" {
-                                popuplateMovies()
-                            } else {
                                 popuplateValues()
-                            }
                         }
                     } label: {
                         if isExapanded {
@@ -40,20 +36,12 @@ struct ExpandableButtonView: View {
                 }
                 .padding()
                 if isExapanded {
-                    if text == "All Movies" {
-                        ForEach(movies, id: \.imdbID) { each in
-                            NavigationLink(destination: MovieDetailView(movie: each)) {
-                                MovieCardView(movieModel: MovieModel.convertToMovieCardMode(model: each), imageUrl: each.poster)
-                            }
+                    ForEach(values, id: \.self) { each in
+                        NavigationLink( destination: ListOfMoviesView(movies: getMoviesOfSelectedValue(selectedValue: each))) {
+                            ValueCell(value: each)
+                                .border(Color.black)
+                                .frame(maxWidth: .infinity)
                         }
-                    } else {
-                            ForEach(values, id: \.self) { each in
-                                NavigationLink( destination: ListOfMoviesView(viewModel: movieViewModel, selectedOption: SelectionValues(rawValue: text) ?? .year, selectedValue: each)) {
-                                    ValueCell(value: each)
-                                        .border(Color.black)
-                                        .frame(maxWidth: .infinity)
-                                }
-                            }
                     }
                 } else {
                     EmptyView()
@@ -63,6 +51,10 @@ struct ExpandableButtonView: View {
 
     func popuplateValues() {
         values = movieViewModel.getListForSelectedData(selected: SelectionValues(rawValue: text) ?? .year)
+    }
+
+    func getMoviesOfSelectedValue(selectedValue: String) -> Movies {
+        movieViewModel.getMoviesBySelectedValue(selectedOption: SelectionValues(rawValue: text) ?? .year, value: selectedValue)
     }
 
     func popuplateMovies() {
