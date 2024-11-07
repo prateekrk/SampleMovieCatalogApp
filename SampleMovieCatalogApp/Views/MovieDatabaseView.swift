@@ -48,7 +48,7 @@ struct MovieCatalogView: View {
                             Spacer()
                             NavigationLink(destination: AllMoviesScreen(movies: controller.movies, sortBy: .byYear, controller: controller)) {
                                 Image(systemName: "greaterthan")
-                            }
+                            }.navigationTitle("All Movies")
                         } 
                         .padding()
 
