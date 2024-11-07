@@ -6,5 +6,11 @@
 
 ![image](https://github.com/user-attachments/assets/133b3f9d-1890-47d7-af33-a555ee7fecef)
 
+![Simulator Screenshot - iPhone 15 Pro - 2024-11-07 at 21 13 01](https://github.com/user-attachments/assets/d6581d3c-80a1-4a76-a827-7c2836d3aede)
+
+![image](https://github.com/user-attachments/assets/2388c944-e75e-4e83-b29b-877d435c8842)
+
+
+
 
 
